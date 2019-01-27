@@ -17,18 +17,48 @@ $(document).ready(function() {
       $("#add-train-btn").on("click", function(event) {
           event.preventDefault();
 
-          var trainName = $("#train-name-input").val().trim();
-          var trainDestination = $("#destination-input").val().trim();
-          var trainFirst = moment($("#first-input").val().trim(), "HH:MM").format("X");
-          var trainFrequency = $("#frequency-input").val().trim();
+          var trainName = $("#train-name-input").val();
+          var trainDestination = $("#destination-input").val();
+          var trainFirst = $("#first-input").val();
+          var trainFrequency = $("#frequency-input").val();
+        
+        // console.log(trainDestination);
+
+        database.ref().push({
+            name: trainName,
+            destination: trainDestination,
+            time: trainFirst,
+            frequency: trainFrequency
+        });
+          
+             
+        });
+
+      database.ref().on("child_added", function(snapshot) {
+        //   console.log(snapshot.val());
+
+        var nameT = snapshot.val().name;
+        var destinationT = snapshot.val().destination;
+        var firstT = snapshot.val().time;
+        var frequencyT = snapshot.val().frequency;
+
+        //   console.log(trainFirst + "trainFirst");
 
 
-          var newTrain = {
-              train: trainName,
-              destination: trainDestination,
-              first: trainFirst,
-              frequency: trainFrequency
-          }
+        var tStart = firstT;
+        var tFrequency = frequencyT;
+
+//First time train from user
+        var firstTimeConverted = moment(tStart, "HH:MM").subtract(1, "years");
+        console.log(firstTimeConverted + "User Train Time Input");
+
+
+        
+
+
+          
+
+          
       });
 
 
