@@ -10,4 +10,26 @@ $(document).ready(function() {
         messagingSenderId: "421918923570"
       };
       firebase.initializeApp(config)
-};
+
+      var database = firebase.database();
+
+      // Button for adding Trains
+      $("#add-train-btn").on("click", function(event) {
+          event.preventDefault();
+
+          var trainName = $("#train-name-input").val().trim();
+          var trainDestination = $("#destination-input").val().trim();
+          var trainFirst = moment($("#first-input").val().trim(), "HH:MM").format("X");
+          var trainFrequency = $("#frequency-input").val().trim();
+
+
+          var newTrain = {
+              train: trainName,
+              destination: trainDestination,
+              first: trainFirst,
+              frequency: trainFrequency
+          }
+      });
+
+
+});
