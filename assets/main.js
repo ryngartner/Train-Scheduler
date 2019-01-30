@@ -1,6 +1,7 @@
-// Begin Javascript - Initialize Firebase
+// Begin Javascript
 $(document).ready(function(){
 
+// Initialize Firebase
 var config = {
         apiKey: "AIzaSyDqoQTWcOsQzKCR2rzuOeTiivWUAZtW_yE",
         authDomain: "train-scheduler-23d8a.firebaseapp.com",
@@ -10,32 +11,36 @@ var config = {
         messagingSenderId: "421918923570"
       };
       firebase.initializeApp(config)
-
       var database = firebase.database();
 
-      // Button for adding Trains
-      $("#add-train-btn").on("click", function(event) {
+      // Submit Button
+      $("#submit-btn").on("click", function(event) {
           event.preventDefault();
-
+      
+      //  Users input
           var trainName = $("#train-name-input").val().trim();
           var trainDestination = $("#destination-input").val().trim();
           var trainFirst = $("#first-input").val().trim();
           var trainFrequency = $("#frequency-input").val().trim();
-
+      
+      // Object to hold train data
         var newTrain = {
             name: trainName,
             destination: trainDestination,
             time: trainFirst,
             frequency: trainFrequency
         };
-
+      
+      // Push train data to firebase
         firebase.database().ref().push(newTrain);
 
+      // Just checking to make sure
         console.log(newTrain.name);
         console.log(newTrain.destination);
         console.log(newTrain.time);
         console.log(newTrain.frequency);
 
+      // Clearing the input text boxes
         $("#train-name-input").val("");
         $("#destination-input").val("");
         $("#first-input").val("");
@@ -45,34 +50,33 @@ var config = {
       database.ref().on("child_added", function(childSnapshot, prevChildKey) {
           console.log(childSnapshot.val());
 
-        var trainName = childSnapshot.val().name;
-        var trainDestination = childSnapshot.val().destination;
-        var firstTrain = childSnapshot.val().time;
-        var trainFrequency = childSnapshot.val().frequency;
-
-        var trainFrequency;
+        trainName = childSnapshot.val().name;
+        trainDestination = childSnapshot.val().destination;
+        firstTrain = childSnapshot.val().time;
+        trainFrequency = childSnapshot.val().frequency;
 
         var firstTime = 0;
 
         var firstTrainConverted = moment(firstTime, "HH:mm").subtract(1, "years");
-        console.log(firstTrainConverted);
+        // console.log(firstTrainConverted);
 
         var currentTime = moment();
-        console.log("CURRENT TIME: " + moment(currentTime).format("HH:mm"));
+        // console.log("CURRENT TIME: " + moment(currentTime).format("HH:mm"));
 
         var difference = moment().diff(moment(firstTrainConverted), "minutes"); 
-        console.log("DIFFERENCE IN TIME: " + difference);
+        // console.log("DIFFERENCE IN TIME: " + difference);
 
         var tRemainder = difference % trainFrequency;
-        console.log(tRemainder);
+        // console.log(tRemainder);
 
         var minAway = trainFrequency - tRemainder;
-        console.log("MINUTES TILL TRAIN: " + minAway);
+        // console.log("MINUTES TILL TRAIN: " + minAway);
 
         var nextTrain = moment().add(minAway, "minutes");
-        console.log("ARRIVAL TIME: " + moment(nextTrain).format("HH:mm"));
+        // console.log("ARRIVAL TIME: " + moment(nextTrain).format("HH:mm"));
 
-        $("#train-table").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainFrequency + "</td><td>" + moment(nextTrain).format("HH:mm") + "</td><td>" + minAway + "</td></tr>");
+        $("#train-table").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>"
+         + trainFrequency + "</td><td>" + moment(nextTrain).format("HH:mm") + "</td><td>" + minAway + "</td></tr>");
  
 
       });
