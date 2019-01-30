@@ -52,7 +52,7 @@ var config = {
 
         trainName = childSnapshot.val().name;
         trainDestination = childSnapshot.val().destination;
-        firstTrain = childSnapshot.val().time;
+        trainFirst = childSnapshot.val().time;
         trainFrequency = childSnapshot.val().frequency;
 
         var firstTime = 0;
