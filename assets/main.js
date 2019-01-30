@@ -1,8 +1,6 @@
 // Begin Javascript - Initialize Firebase
 $(document).ready(function(){
 
-    
-
 var config = {
         apiKey: "AIzaSyDqoQTWcOsQzKCR2rzuOeTiivWUAZtW_yE",
         authDomain: "train-scheduler-23d8a.firebaseapp.com",
@@ -23,8 +21,6 @@ var config = {
           var trainDestination = $("#destination-input").val().trim();
           var trainFirst = $("#first-input").val().trim();
           var trainFrequency = $("#frequency-input").val().trim();
-        
-        // console.log(trainDestination);
 
         var newTrain = {
             name: trainName,
@@ -40,6 +36,10 @@ var config = {
         console.log(newTrain.time);
         console.log(newTrain.frequency);
 
+        $("#train-name-input").val("");
+        $("#destination-input").val("");
+        $("#first-input").val("");
+        $("#frequency-input").val("");
     });
 
       database.ref().on("child_added", function(childSnapshot, prevChildKey) {
@@ -58,20 +58,21 @@ var config = {
         console.log(firstTrainConverted);
 
         var currentTime = moment();
-        console.log("current time: " + moment(currentTime).format("HH:mm"));
+        console.log("CURRENT TIME: " + moment(currentTime).format("HH:mm"));
 
-        var difference = moment().diff(moment(firstTrainConverted), "minutes");
-        
+        var difference = moment().diff(moment(firstTrainConverted), "minutes"); 
+        console.log("DIFFERENCE IN TIME: " + difference);
 
         var tRemainder = difference % trainFrequency;
         console.log(tRemainder);
 
         var minAway = trainFrequency - tRemainder;
+        console.log("MINUTES TILL TRAIN: " + minAway);
 
         var nextTrain = moment().add(minAway, "minutes");
-       
+        console.log("ARRIVAL TIME: " + moment(nextTrain).format("HH:mm"));
 
-        $("#train-table > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainFrequency + "</td><td>" + moment(nextTrain).format("HH:mm") + "</td><td>" + minAway + "</td></tr>");
+        $("#train-table").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainFrequency + "</td><td>" + moment(nextTrain).format("HH:mm") + "</td><td>" + minAway + "</td></tr>");
  
 
       });
