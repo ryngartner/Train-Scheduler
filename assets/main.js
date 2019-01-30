@@ -1,7 +1,9 @@
-// Begin Javascript - Firebase
+// Begin Javascript - Initialize Firebase
+$(document).ready(function(){
 
-$(document).ready(function() {
-    var config = {
+    
+
+var config = {
         apiKey: "AIzaSyDqoQTWcOsQzKCR2rzuOeTiivWUAZtW_yE",
         authDomain: "train-scheduler-23d8a.firebaseapp.com",
         databaseURL: "https://train-scheduler-23d8a.firebaseio.com",
@@ -17,49 +19,60 @@ $(document).ready(function() {
       $("#add-train-btn").on("click", function(event) {
           event.preventDefault();
 
-          var trainName = $("#train-name-input").val();
-          var trainDestination = $("#destination-input").val();
-          var trainFirst = $("#first-input").val();
-          var trainFrequency = $("#frequency-input").val();
+          var trainName = $("#train-name-input").val().trim();
+          var trainDestination = $("#destination-input").val().trim();
+          var trainFirst = $("#first-input").val().trim();
+          var trainFrequency = $("#frequency-input").val().trim();
         
         // console.log(trainDestination);
 
-        database.ref().push({
+        var newTrain = {
             name: trainName,
             destination: trainDestination,
             time: trainFirst,
             frequency: trainFrequency
-        });
-          
-             
-        });
+        };
 
-      database.ref().on("child_added", function(snapshot) {
-        //   console.log(snapshot.val());
+        firebase.database().ref().push(newTrain);
 
-        var nameT = snapshot.val().name;
-        var destinationT = snapshot.val().destination;
-        var firstT = snapshot.val().time;
-        var frequencyT = snapshot.val().frequency;
+        console.log(newTrain.name);
+        console.log(newTrain.destination);
+        console.log(newTrain.time);
+        console.log(newTrain.frequency);
 
-        //   console.log(trainFirst + "trainFirst");
+    });
 
+      database.ref().on("child_added", function(childSnapshot, prevChildKey) {
+          console.log(childSnapshot.val());
 
-        var tStart = firstT;
-        var tFrequency = frequencyT;
+        var trainName = childSnapshot.val().name;
+        var trainDestination = childSnapshot.val().destination;
+        var firstTrain = childSnapshot.val().time;
+        var trainFrequency = childSnapshot.val().frequency;
 
-//First time train from user
-        var firstTimeConverted = moment(tStart, "HH:MM").subtract(1, "years");
-        console.log(firstTimeConverted + "User Train Time Input");
+        var trainFrequency;
 
+        var firstTime = 0;
 
+        var firstTrainConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+        console.log(firstTrainConverted);
+
+        var currentTime = moment();
+        console.log("current time: " + moment(currentTime).format("HH:mm"));
+
+        var difference = moment().diff(moment(firstTrainConverted), "minutes");
         
 
+        var tRemainder = difference % trainFrequency;
+        console.log(tRemainder);
 
-          
+        var minAway = trainFrequency - tRemainder;
 
-          
+        var nextTrain = moment().add(minAway, "minutes");
+       
+
+        $("#train-table > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainFrequency + "</td><td>" + moment(nextTrain).format("HH:mm") + "</td><td>" + minAway + "</td></tr>");
+ 
+
       });
-
-
-});
+    });
